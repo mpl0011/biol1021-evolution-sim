@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIOL 1021 Lab 13: Wildflower Meadow Evolution Simulator</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --secondary: #3b82f6;
+            --danger: #ef4444;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-input: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #475569;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3);
+        }
+
+        header h1 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .procedure-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: var(--bg-card);
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--primary);
+            color: var(--text-main);
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .panel {
+            display: none;
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        .panel-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 8px;
+        }
+
+        .sim-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            align-items: start;
+        }
+
+        @media (max-width: 768px) {
+            .sim-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .controls-box {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .control-group input, .control-group select {
+            width: 100%;
+            padding: 10px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            margin-top: 8px;
+        }
+
+        .btn-secondary:hover {
+            background: #2563eb;
+        }
+
+        /* Meadow Visualization Container */
+        .bowl-container {
+            text-align: center;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .bowl {
+            width: 100%;
+            height: 160px;
+            border: 4px solid #065f46;
+            border-radius: 12px;
+            margin: 15px auto;
+            position: relative;
+            background: linear-gradient(to bottom, #064e3b, #022c22);
+            overflow: hidden;
+            display: flex;
+            flex-wrap: wrap;
+            align-content: center;
+            justify-content: center;
+            padding: 10px;
+            gap: 6px;
+        }
+
+        .flower {
+            font-size: 18px;
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+
+        .flower:hover {
+            transform: scale(1.3);
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+            font-size: 0.95rem;
+        }
+
+        .stat-badge {
+            background: var(--bg-input);
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        .table-container {
+            margin-top: 25px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(15, 23, 42, 0.4);
+            border-radius: 8px;
+            overflow: hidden;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 10px 12px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--bg-input);
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: rgba(255,255,255,0.02);
+        }
+
+        .chart-container {
+            margin-top: 30px;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            height: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>BIOL 1021 Lab 13: Wildflower Meadow Evolution Simulator</h1>
+            <p>Population Genetics Contextualized: Red ($R$) & White ($r$) Flower Alleles</p>
+        </header>
+
+        <div class="procedure-tabs">
+            <button class="tab-btn active" onclick="switchTab('proc1')">Procedure 1: Stable Meadow (HWE)</button>
+            <button class="tab-btn" onclick="switchTab('proc2')">Procedure 2: Natural Selection (Herbivory on rr)</button>
+            <button class="tab-btn" onclick="switchTab('proc3')">Procedure 3: Isolated Patch (Genetic Drift)</button>
+        </div>
+
+        <!-- PROCEDURE 1 -->
+        <div id="proc1" class="panel active">
+            <h2 class="panel-title">Procedure 1: Stable Meadow (Hardy-Weinberg Equilibrium)</h2>
+            <div class="sim-grid">
+                <div>
+                    <div class="controls-box">
+                        <div class="control-group">
+                            <label>Starting Red Alleles ($R$) / White Alleles ($r$)</label>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="number" id="p1-red" value="50" min="1" max="99">
+                                <input type="number" id="p1-white" value="50" min="1" max="99">
+                            </div>
+                        </div>
+                        <button class="btn" onclick="runProcedure1Gen()">Simulate 1 Generation (50 Plants)</button>
+                        <button class="btn btn-secondary" onclick="resetProcedure1()">Reset Meadow</button>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <p id="p1-status" style="font-size: 0.9rem; color: var(--text-muted);">Ready to simulate Generation 1 seed dispersal.</p>
+                    </div>
+                </div>
+                <div class="bowl-container">
+                    <h3>Current Meadow Flower Pool</h3>
+                    <div class="bowl" id="p1-bowl"></div>
+                    <div class="stats-row">
+                        <div class="stat-badge">Red Alleles ($R$): <span id="p1-stat-r">50</span></div>
+                        <div class="stat-badge">White Alleles ($r$): <span id="p1-stat-w">50</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <h3>Table 3: Allele Frequencies Over Time</h3>
+                <table id="p1-table">
+                    <thead>
+                        <tr>
+                            <th>Generation</th>
+                            <th>Total Plants</th>
+                            <th>Total Alleles</th>
+                            <th>Total R Alleles</th>
+                            <th>Frequency of R ($p$)</th>
+                            <th>Total r Alleles</th>
+                            <th>Frequency of r ($q$)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Sample</td><td>50</td><td>100</td><td>52</td><td>0.52</td><td>48</td><td>0.48</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="p1-chart"></canvas>
+            </div>
+        </div>
+
+        <!-- PROCEDURE 2 -->
+        <div id="proc2" class="panel">
+            <h2 class="panel-title">Procedure 2: Natural Selection (Herbivore Selection Against White $rr$ Plants)</h2>
+            <div class="sim-grid">
+                <div>
+                    <div class="controls-box">
+                        <div class="control-group">
+                            <label>Current Allele Pool ($R$ Red / $r$ White)</label>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="number" id="p2-red" value="50">
+                                <input type="number" id="p2-white" value="50">
+                            </div>
+                        </div>
+                        <button class="btn" onclick="runProcedure2Gen()">Simulate Generation & Apply Selection</button>
+                        <button class="btn btn-secondary" onclick="resetProcedure2()">Reset Meadow</button>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <p id="p2-status" style="font-size: 0.9rem; color: var(--text-muted);">Ready to simulate selection (rr is non-viable).</p>
+                    </div>
+                </div>
+                <div class="bowl-container">
+                    <h3>Meadow Pool (Selection Pressure Active)</h3>
+                    <div class="bowl" id="p2-bowl"></div>
+                    <div class="stats-row">
+                        <div class="stat-badge">Red Alleles ($R$): <span id="p2-stat-r">50</span></div>
+                        <div class="stat-badge">White Alleles ($r$): <span id="p2-stat-w">50</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <h3>Table 6: Selection Allele Frequencies Over Time</h3>
+                <table id="p2-table">
+                    <thead>
+                        <tr>
+                            <th>Generation</th>
+                            <th>Total Plants</th>
+                            <th>Surviving Alleles</th>
+                            <th>Total R Alleles</th>
+                            <th>Frequency of R ($p$)</th>
+                            <th>Total r Alleles</th>
+                            <th>Frequency of r ($q$)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Sample</td><td>50</td><td>80</td><td>52</td><td>0.65</td><td>28</td><td>0.35</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="p2-chart"></canvas>
+            </div>
+        </div>
+
+        <!-- PROCEDURE 3 -->
+        <div id="proc3" class="panel">
+            <h2 class="panel-title">Procedure 3: Isolated Patch (Genetic Drift, $N=5$ Plants)</h2>
+            <div class="sim-grid">
+                <div>
+                    <div class="controls-box">
+                        <div class="control-group">
+                            <label>Micro-Patch Pool (5 Red / 5 White Alleles)</label>
+                        </div>
+                        <button class="btn" onclick="runProcedure3Round()">Simulate Pollination Round (5 Plants)</button>
+                        <button class="btn btn-secondary" onclick="resetProcedure3()">Reset Patch</button>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <p id="p3-status" style="font-size: 0.9rem; color: var(--text-muted);">Ready to run micro-patch round 1.</p>
+                    </div>
+                </div>
+                <div class="bowl-container">
+                    <h3>Micro-Patch ($N=5$)</h3>
+                    <div class="bowl" id="p3-bowl" style="height: 110px;"></div>
+                    <div class="stats-row">
+                        <div class="stat-badge">Red ($R$): <span id="p3-stat-r">5</span></div>
+                        <div class="stat-badge">White ($r$): <span id="p3-stat-w">5</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <h3>Table 9: Small Population Frequencies</h3>
+                <table id="p3-table">
+                    <thead>
+                        <tr>
+                            <th>Round</th>
+                            <th>Total Plants</th>
+                            <th>Total Alleles</th>
+                            <th>Total R Alleles</th>
+                            <th>Frequency of R ($p$)</th>
+                            <th>Total r Alleles</th>
+                            <th>Frequency of r ($q$)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Sample</td><td>5</td><td>10</td><td>6</td><td>0.60</td><td>4</td><td>0.40</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="p3-chart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function renderMeadow(bowlId, redCount, whiteCount) {
+            const bowl = document.getElementById(bowlId);
+            bowl.innerHTML = '';
+            const totalVis = Math.min(redCount + whiteCount, 60);
+            const rRatio = redCount / (redCount + whiteCount);
+            const visRed = Math.round(totalVis * rRatio);
+            const visWhite = totalVis - visRed;
+
+            for (let i = 0; i < visRed; i++) {
+                const f = document.createElement('span');
+                f.className = 'flower';
+                f.innerHTML = '🌹'; // Red flower
+                bowl.appendChild(f);
+            }
+            for (let i = 0; i < visWhite; i++) {
+                const f = document.createElement('span');
+                f.className = 'flower';
+                f.innerHTML = '🌼'; // White/yellow wildflower
+                bowl.appendChild(f);
+            }
+        }
+
+        let p1Gen = 0;
+        let p1Chart;
+
+        function initP1Chart() {
+            const ctx = document.getElementById('p1-chart').getContext('2d');
+            p1Chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Sample', 'Gen 1'],
+                    datasets: [{
+                        label: 'Allele Frequency R (p)',
+                        data: [0.52, 0.51],
+                        borderColor: '#10b981',
+                        tension: 0.1
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 1 } } }
+            });
+        }
+
+        function resetProcedure1() {
+            p1Gen = 0;
+            document.getElementById('p1-red').value = 50;
+            document.getElementById('p1-white').value = 50;
+            renderMeadow('p1-bowl', 50, 50);
+            document.getElementById('p1-stat-r').innerText = 50;
+            document.getElementById('p1-stat-w').innerText = 50;
+            const tbody = document.querySelector('#p1-table tbody');
+            tbody.innerHTML = '<tr><td>Sample</td><td>50</td><td>100</td><td>52</td><td>0.52</td><td>48</td><td>0.48</td></tr>';
+            document.getElementById('p1-status').innerText = 'Meadow reset. Ready to run.';
+        }
+
+        function runProcedure1Gen() {
+            p1Gen++;
+            let r = parseInt(document.getElementById('p1-red').value);
+            let w = parseInt(document.getElementById('p1-white').value);
+            let totalB = r + w;
+
+            let totalR = 0, totalW = 0;
+            for(let i=0; i<50; i++) {
+                let draw1 = Math.random() < (r / totalB) ? 'R' : 'r';
+                let draw2 = Math.random() < (r / totalB) ? 'R' : 'r';
+                if(draw1 === 'R' && draw2 === 'R') { totalR += 2; }
+                else if(draw1 === 'r' && draw2 === 'r') { totalW += 2; }
+                else { totalR += 1; totalW += 1; }
+            }
+
+            let pFreq = (totalR / 100).toFixed(2);
+            let qFreq = (totalW / 100).toFixed(2);
+
+            let newR = totalR;
+            let newW = totalW;
+            document.getElementById('p1-red').value = newR;
+            document.getElementById('p1-white').value = newW;
+            renderMeadow('p1-bowl', newR, newW);
+            document.getElementById('p1-stat-r').innerText = newR;
+            document.getElementById('p1-stat-w').innerText = newW;
+
+            const tbody = document.querySelector('#p1-table tbody');
+            const row = document.createElement('tr');
+            row.innerHTML = `<td>${p1Gen}</td><td>50</td><td>100</td><td>${totalR}</td><td>${pFreq}</td><td>${totalW}</td><td>${qFreq}</td>`;
+            tbody.appendChild(row);
+
+            document.getElementById('p1-status').innerText = `Generation ${p1Gen} pollinated! R allele frequency: ${pFreq}`;
+        }
+
+        let p2Gen = 0;
+        function resetProcedure2() {
+            p2Gen = 0;
+            document.getElementById('p2-red').value = 50;
+            document.getElementById('p2-white').value = 50;
+            renderMeadow('p2-bowl', 50, 50);
+            document.getElementById('p2-stat-r').innerText = 50;
+            document.getElementById('p2-stat-w').innerText = 50;
+            const tbody = document.querySelector('#p2-table tbody');
+            tbody.innerHTML = '<tr><td>Sample</td><td>50</td><td>80</td><td>52</td><td>0.65</td><td>28</td><td>0.35</td></tr>';
+            document.getElementById('p2-status').innerText = 'Meadow reset. Ready to run selection.';
+        }
+
+        function runProcedure2Gen() {
+            p2Gen++;
+            let r = parseInt(document.getElementById('p2-red').value);
+            let w = parseInt(document.getElementById('p2-white').value);
+            let totalB = r + w;
+
+            let totalR = 0, totalW = 0, survivingAlleles = 0;
+            for(let i=0; i<50; i++) {
+                let draw1 = Math.random() < (r / totalB) ? 'R' : 'r';
+                let draw2 = Math.random() < (r / totalB) ? 'R' : 'r';
+                
+                if(draw1 === 'r' && draw2 === 'r') {
+                    // Herbivore eliminated rr plants!
+                    continue;
+                }
+                if(draw1 === 'R' && draw2 === 'R') {
+                    totalR += 2;
+                    survivingAlleles += 2;
+                } else {
+                    totalR += 1;
+                    totalW += 1;
+                    survivingAlleles += 2;
+                }
+            }
+
+            if(survivingAlleles === 0) survivingAlleles = 1;
+            let pFreq = (totalR / survivingAlleles).toFixed(2);
+            let qFreq = (totalW / survivingAlleles).toFixed(2);
+
+            let newR = Math.round((totalR / survivingAlleles) * 100);
+            let newW = 100 - newR;
+            document.getElementById('p2-red').value = newR;
+            document.getElementById('p2-white').value = newW;
+            renderMeadow('p2-bowl', newR, newW);
+            document.getElementById('p2-stat-r').innerText = newR;
+            document.getElementById('p2-stat-w').innerText = newW;
+
+            const tbody = document.querySelector('#p2-table tbody');
+            const row = document.createElement('tr');
+            row.innerHTML = `<td>${p2Gen}</td><td>50</td><td>${survivingAlleles}</td><td>${totalR}</td><td>${pFreq}</td><td>${totalW}</td><td>${qFreq}</td>`;
+            tbody.appendChild(row);
+
+            document.getElementById('p2-status').innerText = `Generation ${p2Gen}: Herbivores removed rr plants. R frequency rose to ${pFreq}`;
+        }
+
+        let p3Round = 0;
+        function resetProcedure3() {
+            p3Round = 0;
+            renderMeadow('p3-bowl', 5, 5);
+            document.getElementById('p3-stat-r').innerText = 5;
+            document.getElementById('p3-stat-w').innerText = 5;
+            const tbody = document.querySelector('#p3-table tbody');
+            tbody.innerHTML = '<tr><td>Sample</td><td>5</td><td>10</td><td>6</td><td>0.60</td><td>4</td><td>0.40</td></tr>';
+            document.getElementById('p3-status').innerText = 'Patch reset. Ready to run.';
+        }
+
+        function runProcedure3Round() {
+            p3Round++;
+            let totalR = 0, totalW = 0;
+            for(let i=0; i<5; i++) {
+                let draw1 = Math.random() < 0.5 ? 'R' : 'r';
+                let draw2 = Math.random() < 0.5 ? 'R' : 'r';
+                if(draw1 === 'R') totalR++; else totalW++;
+                if(draw2 === 'R') totalR++; else totalW++;
+            }
+            let pFreq = (totalR / 10).toFixed(2);
+            let qFreq = (totalW / 10).toFixed(2);
+
+            const tbody = document.querySelector('#p3-table tbody');
+            const row = document.createElement('tr');
+            row.innerHTML = `<td>${p3Round}</td><td>5</td><td>10</td><td>${totalR}</td><td>${pFreq}</td><td>${totalW}</td><td>${qFreq}</td>`;
+            tbody.appendChild(row);
+
+            document.getElementById('p3-status').innerText = `Round ${p3Round}: Genetic drift volatility in micro-patch (R: ${pFreq})`;
+        }
+
+        window.onload = function() {
+            renderMeadow('p1-bowl', 50, 50);
+            renderMeadow('p2-bowl', 50, 50);
+            renderMeadow('p3-bowl', 5, 5);
+            initP1Chart();
+        };
+    </script>
+</body>
+</html>
