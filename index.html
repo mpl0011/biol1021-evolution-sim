@@ -227,6 +227,62 @@
             border: 1px solid var(--border);
         }
 
+        .quiz-box {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            margin-top: 25px;
+        }
+
+        .quiz-question {
+            margin-bottom: 15px;
+        }
+
+        .quiz-question p {
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .quiz-option {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-align: left;
+            color: white;
+            transition: background 0.2s;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--primary);
+        }
+
+        .quiz-option.correct {
+            background: #059669 !important;
+            border-color: #10b981 !important;
+        }
+
+        .quiz-option.incorrect {
+            background: #dc2626 !important;
+            border-color: #ef4444 !important;
+        }
+
+        .quiz-feedback {
+            font-size: 0.85rem;
+            margin-top: 4px;
+            color: var(--text-muted);
+        }
+
         .table-container {
             margin-top: 25px;
             overflow-x: auto;
@@ -282,7 +338,7 @@
 
         <!-- PROCEDURE 1 -->
         <div id="proc1" class="panel active">
-            <h2 class="panel-title">Procedure 1: Stable Meadow (Hardy-Weinberg Equilibrium)</h2>
+            <h2 class="panel-title">Procedure 1: Baseline Population & Hardy-Weinberg Equilibrium</h2>
             <div class="sim-grid">
                 <div>
                     <div class="controls-box">
@@ -310,11 +366,27 @@
                 </div>
             </div>
 
-            
-            <div class="controls-box" style="margin-top: 25px;">
-                <h3 style="color: var(--primary); margin-bottom: 10px; font-size: 1.1rem;">📝 Procedure 1 Concept Check</h3>
-                <p style="font-size: 0.9rem; margin-bottom: 8px; color: var(--text-muted);">1. If allele frequencies remain stable across generations with no mutations, does this prove evolution is occurring? Why or why not?</p>
-                <p style="font-size: 0.9rem; margin-bottom: 8px; color: var(--text-muted);">2. Why is a real natural population rarely in true Hardy-Weinberg equilibrium?</p>
+            <div class="quiz-box">
+                <h3 style="color: var(--primary); margin-bottom: 15px; font-size: 1.1rem;">📝 Procedure 1 Concept Check</h3>
+                
+                <div class="quiz-question">
+                    <p>1. True or False: Stable allele frequencies across generations with no mutation mean that evolution is actively occurring in this population.</p>
+                    <div class="quiz-options">
+                        <button class="quiz-option" onclick="checkAnswer(this, false, 'Correct! Stability with no evolutionary forces means the population is in Hardy-Weinberg equilibrium (no evolution).')">True</button>
+                        <button class="quiz-option" onclick="checkAnswer(this, true, 'Correct! Stable frequencies with no mutation/selection mean NO evolution is occurring (Hardy-Weinberg Equilibrium).')">False</button>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question">
+                    <p>2. Which of the following is required for a real natural population to remain in Hardy-Weinberg equilibrium?</p>
+                    <div class="quiz-options">
+                        <button class="quiz-option" onclick="checkAnswer(this, false, 'Incorrect. Natural populations experience continuous gene flow and selection.')">A) Active natural selection</button>
+                        <button class="quiz-option" onclick="checkAnswer(this, true, 'Correct! HWE requires random mating, no mutation, no migration, very large population size, and no selection.')">B) No mutation, selection, or migration</button>
+                        <button class="quiz-option" onclick="checkAnswer(this, false, 'Incorrect. Small populations are prone to rapid genetic drift.')">C) Extremely small population size</button>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                </div>
             </div>
 
             <div class="table-container">
@@ -344,7 +416,7 @@
 
         <!-- PROCEDURE 2 -->
         <div id="proc2" class="panel">
-            <h2 class="panel-title">Procedure 2: Natural Selection (Herbivore Selection Against White $rr$ Plants)</h2>
+            <h2 class="panel-title">Procedure 2: Natural Selection (Selection Against Lethal $rr$)</h2>
             <div class="sim-grid">
                 <div>
                     <div class="controls-box">
@@ -372,11 +444,27 @@
                 </div>
             </div>
 
-            
-            <div class="controls-box" style="margin-top: 25px;">
-                <h3 style="color: var(--primary); margin-bottom: 10px; font-size: 1.1rem;">📝 Procedure 2 Concept Check</h3>
-                <p style="font-size: 0.9rem; margin-bottom: 8px; color: var(--text-muted);">1. What happened to the frequency of allele R over time when the recessive homozygous genotype (rr) was selected against (lethal)?</p>
-                <p style="font-size: 0.9rem; margin-bottom: 8px; color: var(--text-muted);">2. Why did the total number of surviving alleles decrease or change compared to Procedure 1?</p>
+            <div class="quiz-box">
+                <h3 style="color: var(--primary); margin-bottom: 15px; font-size: 1.1rem;">📝 Procedure 2 Concept Check</h3>
+                
+                <div class="quiz-question">
+                    <p>1. When the homozygous recessive genotype ($rr$) is lethal, what happens to the frequency of the favored allele ($R$) over time?</p>
+                    <div class="quiz-options">
+                        <button class="quiz-option" onclick="checkAnswer(this, true, 'Correct! Selection against the recessive lethal genotype causes the dominant/favored allele R to increase over time.')">A) It increases over time</button>
+                        <button class="quiz-option" onclick="checkAnswer(this, false, 'Incorrect. The favored allele is being selected for, so its frequency goes up.')">B) It decreases to zero immediately</button>
+                        <button class="quiz-option" onclick="checkAnswer(this, false, 'Incorrect. Selection alters allele frequencies systematically.')">C) It stays exactly at 0.50</button>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question">
+                    <p>2. True or False: In Procedure 2, the total number of alleles contributing to the next generation remains 100 because lethal individuals still reproduce.</p>
+                    <div class="quiz-options">
+                        <button class="quiz-option" onclick="checkAnswer(this, false, 'Correct! Lethal rr individuals do not survive or reproduce, so the total allele pool decreases below 100.')">True</button>
+                        <button class="quiz-option" onclick="checkAnswer(this, true, 'Correct! Lethal individuals cannot reproduce, so total alleles drop below 100.')">False</button>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                </div>
             </div>
 
             <div class="table-container">
@@ -430,11 +518,27 @@
                 </div>
             </div>
 
-            
-            <div class="controls-box" style="margin-top: 25px;">
-                <h3 style="color: var(--primary); margin-bottom: 10px; font-size: 1.1rem;">📝 Procedure 3 Concept Check</h3>
-                <p style="font-size: 0.9rem; margin-bottom: 8px; color: var(--text-muted);">1. How did the amount of allele frequency fluctuation in N=5 compare to N=50? What causes this difference?</p>
-                <p style="font-size: 0.9rem; margin-bottom: 8px; color: var(--text-muted);">2. Why are endangered species with very small population sizes particularly vulnerable to genetic drift?</p>
+            <div class="quiz-box">
+                <h3 style="color: var(--primary); margin-bottom: 15px; font-size: 1.1rem;">📝 Procedure 3 Concept Check</h3>
+                
+                <div class="quiz-question">
+                    <p>1. Why do small populations ($N=5$) experience much wilder swings in allele frequency than large populations ($N=50$)?</p>
+                    <div class="quiz-options">
+                        <button class="quiz-option" onclick="checkAnswer(this, false, 'Incorrect. Mutations are not the primary driver of rapid generation-to-generation drift swings here.')">A) High mutation rates</button>
+                        <button class="quiz-option" onclick="checkAnswer(this, true, 'Correct! Small sample sizes amplify sampling error, meaning random chance events heavily skew allele frequencies.')">B) Greater susceptibility to sampling error (genetic drift)</button>
+                        <button class="quiz-option" onclick="checkAnswer(this, false, 'Incorrect. Natural selection acts independently of population size.')">C) Stronger natural selection pressure</button>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question">
+                    <p>2. True or False: Genetic drift can lead to the complete loss of an allele from a population purely by chance.</p>
+                    <div class="quiz-options">
+                        <button class="quiz-option" onclick="checkAnswer(this, true, 'Correct! Random chance in small populations frequently results in fixation or complete loss of alleles.')">True</button>
+                        <button class="quiz-option" onclick="checkAnswer(this, false, 'Incorrect. Alleles can indeed be lost entirely due to random sampling in small populations.')">False</button>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                </div>
             </div>
 
             <div class="table-container">
@@ -471,6 +575,23 @@
             event.target.classList.add('active');
         }
 
+        function checkAnswer(button, isCorrect, explanation) {
+            const options = button.parentElement.querySelectorAll('.quiz-option');
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+                opt.style.opacity = '0.6';
+            });
+            button.style.opacity = '1';
+            if(isCorrect) {
+                button.classList.add('correct');
+            } else {
+                button.classList.add('incorrect');
+            }
+            const feedback = button.parentElement.parentElement.querySelector('.quiz-feedback');
+            feedback.innerHTML = isCorrect ? "✅ " + explanation : "❌ " + explanation;
+            feedback.style.color = isCorrect ? "#10b981" : "#ef4444";
+        }
+
         function renderMeadow(bowlId, redCount, whiteCount) {
             const bowl = document.getElementById(bowlId);
             bowl.innerHTML = '';
@@ -482,13 +603,13 @@
             for (let i = 0; i < visRed; i++) {
                 const f = document.createElement('span');
                 f.className = 'flower';
-                f.innerHTML = '🌹'; // Red flower
+                f.innerHTML = '🌹';
                 bowl.appendChild(f);
             }
             for (let i = 0; i < visWhite; i++) {
                 const f = document.createElement('span');
                 f.className = 'flower';
-                f.innerHTML = '🌼'; // White/yellow wildflower
+                f.innerHTML = '🌼';
                 bowl.appendChild(f);
             }
         }
@@ -497,7 +618,6 @@
         let p1Chart, p2Chart, p3Chart;
 
         function initCharts() {
-            // Procedure 1 Chart
             const ctx1 = document.getElementById('p1-chart').getContext('2d');
             p1Chart = new Chart(ctx1, {
                 type: 'line',
@@ -513,7 +633,6 @@
                 options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 1 } } }
             });
 
-            // Procedure 2 Chart
             const ctx2 = document.getElementById('p2-chart').getContext('2d');
             p2Chart = new Chart(ctx2, {
                 type: 'line',
@@ -529,7 +648,6 @@
                 options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 1 } } }
             });
 
-            // Procedure 3 Chart
             const ctx3 = document.getElementById('p3-chart').getContext('2d');
             p3Chart = new Chart(ctx3, {
                 type: 'line',
@@ -551,7 +669,6 @@
             p1Chart.data.labels = ['Sample', 'Gen 1'];
             p1Chart.data.datasets[0].data = [0.52, 0.51];
             p1Chart.update();
-            p1Gen = 0;
             document.getElementById('p1-red').value = 50;
             document.getElementById('p1-white').value = 50;
             renderMeadow('p1-bowl', 50, 50);
@@ -600,13 +717,11 @@
             document.getElementById('p1-status').innerText = `Generation ${p1Gen} pollinated! R allele frequency: ${pFreq}`;
         }
 
-        let p2Gen = 0;
         function resetProcedure2() {
             p2Gen = 0;
             p2Chart.data.labels = ['Sample', 'Gen 1'];
             p2Chart.data.datasets[0].data = [0.65, 0.70];
             p2Chart.update();
-            p2Gen = 0;
             document.getElementById('p2-red').value = 50;
             document.getElementById('p2-white').value = 50;
             renderMeadow('p2-bowl', 50, 50);
@@ -629,7 +744,6 @@
                 let draw2 = Math.random() < (r / totalB) ? 'R' : 'r';
                 
                 if(draw1 === 'r' && draw2 === 'r') {
-                    // Herbivore eliminated rr plants!
                     continue;
                 }
                 if(draw1 === 'R' && draw2 === 'R') {
@@ -666,13 +780,11 @@
             document.getElementById('p2-status').innerText = `Generation ${p2Gen}: Herbivores removed rr plants. R frequency rose to ${pFreq}`;
         }
 
-        let p3Round = 0;
         function resetProcedure3() {
             p3Round = 0;
             p3Chart.data.labels = ['Sample', 'Round 1'];
             p3Chart.data.datasets[0].data = [0.60, 0.70];
             p3Chart.update();
-            p3Round = 0;
             renderMeadow('p3-bowl', 5, 5);
             document.getElementById('p3-stat-r').innerText = 5;
             document.getElementById('p3-stat-w').innerText = 5;
@@ -697,6 +809,10 @@
             const row = document.createElement('tr');
             row.innerHTML = `<td>${p3Round}</td><td>5</td><td>10</td><td>${totalR}</td><td>${pFreq}</td><td>${totalW}</td><td>${qFreq}</td>`;
             tbody.appendChild(row);
+
+            p3Chart.data.labels.push('Round ' + p3Round);
+            p3Chart.data.datasets[0].data.push(parseFloat(pFreq));
+            p3Chart.update();
 
             document.getElementById('p3-status').innerText = `Round ${p3Round}: Genetic drift volatility in micro-patch (R: ${pFreq})`;
         }
