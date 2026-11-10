@@ -620,12 +620,20 @@
                 type: 'line',
                 data: {
                     labels: ['Sample', 'Gen 1'],
-                    datasets: [{
-                        label: 'Allele Frequency R (p)',
-                        data: [0.52, 0.51],
-                        borderColor: '#10b981',
-                        tension: 0.1
-                    }]
+                    datasets: [
+                        {
+                            label: 'Allele Frequency R (p)',
+                            data: [0.52, 0.51],
+                            borderColor: '#ef4444',
+                            tension: 0.1
+                        },
+                        {
+                            label: 'Allele Frequency r (q)',
+                            data: [0.48, 0.49],
+                            borderColor: '#f8fafc',
+                            tension: 0.1
+                        }
+                    ]
                 },
                 options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 1 } } }
             });
@@ -635,12 +643,24 @@
                 type: 'line',
                 data: {
                     labels: ['Sample', 'Gen 1'],
-                    datasets: [{
-                        label: 'Selection Frequency R (p)',
-                        data: [0.65, 0.70],
-                        borderColor: '#3b82f6',
-                        tension: 0.1
-                    }]
+                    datasets: [
+                        {
+                            label: 'Selection Frequency R (p)',
+                            data: [0.65, 0.70],
+                            borderColor: '#ef4444',
+                            backgroundColor: '#ef4444',
+                            pointBackgroundColor: '#ef4444',
+                            tension: 0.1
+                        },
+                        {
+                            label: 'Selection Frequency r (q)',
+                            data: [0.35, 0.30],
+                            borderColor: '#f8fafc',
+                            backgroundColor: '#f8fafc',
+                            pointBackgroundColor: '#f8fafc',
+                            tension: 0.1
+                        }
+                    ]
                 },
                 options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 1 } } }
             });
@@ -650,12 +670,24 @@
                 type: 'line',
                 data: {
                     labels: ['Sample', 'Round 1'],
-                    datasets: [{
-                        label: 'Drift Frequency R (p)',
-                        data: [0.60, 0.70],
-                        borderColor: '#ef4444',
-                        tension: 0.1
-                    }]
+                    datasets: [
+                        {
+                            label: 'Drift Frequency R (p)',
+                            data: [0.60, 0.70],
+                            borderColor: '#ef4444',
+                            backgroundColor: '#ef4444',
+                            pointBackgroundColor: '#ef4444',
+                            tension: 0.1
+                        },
+                        {
+                            label: 'Drift Frequency r (q)',
+                            data: [0.40, 0.30],
+                            borderColor: '#f8fafc',
+                            backgroundColor: '#f8fafc',
+                            pointBackgroundColor: '#f8fafc',
+                            tension: 0.1
+                        }
+                    ]
                 },
                 options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 1 } } }
             });
@@ -665,6 +697,7 @@
             p1Gen = 0;
             p1Chart.data.labels = ['Sample', 'Gen 1'];
             p1Chart.data.datasets[0].data = [0.52, 0.51];
+            p1Chart.data.datasets[1].data = [0.48, 0.49];
             p1Chart.update();
             document.getElementById('p1-red').value = 50;
             document.getElementById('p1-white').value = 50;
@@ -709,6 +742,7 @@
 
             p1Chart.data.labels.push('Gen ' + p1Gen);
             p1Chart.data.datasets[0].data.push(parseFloat(pFreq));
+            p1Chart.data.datasets[1].data.push(parseFloat(qFreq));
             p1Chart.update();
 
             document.getElementById('p1-status').innerText = `Generation ${p1Gen} pollinated! R allele frequency: ${pFreq}`;
@@ -718,6 +752,7 @@
             p2Gen = 0;
             p2Chart.data.labels = ['Sample', 'Gen 1'];
             p2Chart.data.datasets[0].data = [0.65, 0.70];
+            p2Chart.data.datasets[1].data = [0.35, 0.30];
             p2Chart.update();
             document.getElementById('p2-red').value = 50;
             document.getElementById('p2-white').value = 50;
@@ -772,6 +807,7 @@
 
             p2Chart.data.labels.push('Gen ' + p2Gen);
             p2Chart.data.datasets[0].data.push(parseFloat(pFreq));
+            p2Chart.data.datasets[1].data.push(parseFloat(qFreq));
             p2Chart.update();
 
             document.getElementById('p2-status').innerText = `Generation ${p2Gen}: Herbivores removed rr plants. R frequency rose to ${pFreq}`;
@@ -781,6 +817,7 @@
             p3Round = 0;
             p3Chart.data.labels = ['Sample', 'Round 1'];
             p3Chart.data.datasets[0].data = [0.60, 0.70];
+            p3Chart.data.datasets[1].data = [0.40, 0.30];
             p3Chart.update();
             renderMeadow('p3-bowl', 5, 5);
             document.getElementById('p3-stat-r').innerText = 5;
@@ -809,6 +846,7 @@
 
             p3Chart.data.labels.push('Round ' + p3Round);
             p3Chart.data.datasets[0].data.push(parseFloat(pFreq));
+            p3Chart.data.datasets[1].data.push(parseFloat(qFreq));
             p3Chart.update();
 
             document.getElementById('p3-status').innerText = `Round ${p3Round}: Genetic drift volatility in micro-patch (R: ${pFreq})`;
