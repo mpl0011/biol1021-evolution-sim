@@ -275,7 +275,7 @@
         </header>
 
         <div class="procedure-tabs">
-            <button class="tab-btn active" onclick="switchTab('proc1')">Procedure 1: Stable Meadow (HWE)</button>
+            <button class="tab-btn active" onclick="switchTab('proc1')">Procedure 1: Baseline Population (HWE)</button>
             <button class="tab-btn" onclick="switchTab('proc2')">Procedure 2: Natural Selection (Herbivory on rr)</button>
             <button class="tab-btn" onclick="switchTab('proc3')">Procedure 3: Isolated Patch (Genetic Drift)</button>
         </div>
@@ -308,6 +308,13 @@
                         <div class="stat-badge">White Alleles ($r$): <span id="p1-stat-w">50</span></div>
                     </div>
                 </div>
+            </div>
+
+            
+            <div class="controls-box" style="margin-top: 25px;">
+                <h3 style="color: var(--primary); margin-bottom: 10px; font-size: 1.1rem;">📝 Procedure 1 Concept Check</h3>
+                <p style="font-size: 0.9rem; margin-bottom: 8px; color: var(--text-muted);">1. If allele frequencies remain stable across generations with no mutations, does this prove evolution is occurring? Why or why not?</p>
+                <p style="font-size: 0.9rem; margin-bottom: 8px; color: var(--text-muted);">2. Why is a real natural population rarely in true Hardy-Weinberg equilibrium?</p>
             </div>
 
             <div class="table-container">
@@ -365,6 +372,13 @@
                 </div>
             </div>
 
+            
+            <div class="controls-box" style="margin-top: 25px;">
+                <h3 style="color: var(--primary); margin-bottom: 10px; font-size: 1.1rem;">📝 Procedure 2 Concept Check</h3>
+                <p style="font-size: 0.9rem; margin-bottom: 8px; color: var(--text-muted);">1. What happened to the frequency of allele R over time when the recessive homozygous genotype (rr) was selected against (lethal)?</p>
+                <p style="font-size: 0.9rem; margin-bottom: 8px; color: var(--text-muted);">2. Why did the total number of surviving alleles decrease or change compared to Procedure 1?</p>
+            </div>
+
             <div class="table-container">
                 <h3>Table 6: Selection Allele Frequencies Over Time</h3>
                 <table id="p2-table">
@@ -414,6 +428,13 @@
                         <div class="stat-badge">White ($r$): <span id="p3-stat-w">5</span></div>
                     </div>
                 </div>
+            </div>
+
+            
+            <div class="controls-box" style="margin-top: 25px;">
+                <h3 style="color: var(--primary); margin-bottom: 10px; font-size: 1.1rem;">📝 Procedure 3 Concept Check</h3>
+                <p style="font-size: 0.9rem; margin-bottom: 8px; color: var(--text-muted);">1. How did the amount of allele frequency fluctuation in N=5 compare to N=50? What causes this difference?</p>
+                <p style="font-size: 0.9rem; margin-bottom: 8px; color: var(--text-muted);">2. Why are endangered species with very small population sizes particularly vulnerable to genetic drift?</p>
             </div>
 
             <div class="table-container">
@@ -472,12 +493,13 @@
             }
         }
 
-        let p1Gen = 0;
-        let p1Chart;
+        let p1Gen = 0, p2Gen = 0, p3Round = 0;
+        let p1Chart, p2Chart, p3Chart;
 
-        function initP1Chart() {
-            const ctx = document.getElementById('p1-chart').getContext('2d');
-            p1Chart = new Chart(ctx, {
+        function initCharts() {
+            // Procedure 1 Chart
+            const ctx1 = document.getElementById('p1-chart').getContext('2d');
+            p1Chart = new Chart(ctx1, {
                 type: 'line',
                 data: {
                     labels: ['Sample', 'Gen 1'],
@@ -490,9 +512,45 @@
                 },
                 options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 1 } } }
             });
+
+            // Procedure 2 Chart
+            const ctx2 = document.getElementById('p2-chart').getContext('2d');
+            p2Chart = new Chart(ctx2, {
+                type: 'line',
+                data: {
+                    labels: ['Sample', 'Gen 1'],
+                    datasets: [{
+                        label: 'Selection Frequency R (p)',
+                        data: [0.65, 0.70],
+                        borderColor: '#3b82f6',
+                        tension: 0.1
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 1 } } }
+            });
+
+            // Procedure 3 Chart
+            const ctx3 = document.getElementById('p3-chart').getContext('2d');
+            p3Chart = new Chart(ctx3, {
+                type: 'line',
+                data: {
+                    labels: ['Sample', 'Round 1'],
+                    datasets: [{
+                        label: 'Drift Frequency R (p)',
+                        data: [0.60, 0.70],
+                        borderColor: '#ef4444',
+                        tension: 0.1
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 1 } } }
+            });
         }
 
         function resetProcedure1() {
+            p1Gen = 0;
+            p1Chart.data.labels = ['Sample', 'Gen 1'];
+            p1Chart.data.datasets[0].data = [0.52, 0.51];
+            p1Chart.update();
             p1Gen = 0;
             document.getElementById('p1-red').value = 50;
             document.getElementById('p1-white').value = 50;
@@ -535,11 +593,19 @@
             row.innerHTML = `<td>${p1Gen}</td><td>50</td><td>100</td><td>${totalR}</td><td>${pFreq}</td><td>${totalW}</td><td>${qFreq}</td>`;
             tbody.appendChild(row);
 
+            p1Chart.data.labels.push('Gen ' + p1Gen);
+            p1Chart.data.datasets[0].data.push(parseFloat(pFreq));
+            p1Chart.update();
+
             document.getElementById('p1-status').innerText = `Generation ${p1Gen} pollinated! R allele frequency: ${pFreq}`;
         }
 
         let p2Gen = 0;
         function resetProcedure2() {
+            p2Gen = 0;
+            p2Chart.data.labels = ['Sample', 'Gen 1'];
+            p2Chart.data.datasets[0].data = [0.65, 0.70];
+            p2Chart.update();
             p2Gen = 0;
             document.getElementById('p2-red').value = 50;
             document.getElementById('p2-white').value = 50;
@@ -593,11 +659,19 @@
             row.innerHTML = `<td>${p2Gen}</td><td>50</td><td>${survivingAlleles}</td><td>${totalR}</td><td>${pFreq}</td><td>${totalW}</td><td>${qFreq}</td>`;
             tbody.appendChild(row);
 
+            p2Chart.data.labels.push('Gen ' + p2Gen);
+            p2Chart.data.datasets[0].data.push(parseFloat(pFreq));
+            p2Chart.update();
+
             document.getElementById('p2-status').innerText = `Generation ${p2Gen}: Herbivores removed rr plants. R frequency rose to ${pFreq}`;
         }
 
         let p3Round = 0;
         function resetProcedure3() {
+            p3Round = 0;
+            p3Chart.data.labels = ['Sample', 'Round 1'];
+            p3Chart.data.datasets[0].data = [0.60, 0.70];
+            p3Chart.update();
             p3Round = 0;
             renderMeadow('p3-bowl', 5, 5);
             document.getElementById('p3-stat-r').innerText = 5;
@@ -631,7 +705,7 @@
             renderMeadow('p1-bowl', 50, 50);
             renderMeadow('p2-bowl', 50, 50);
             renderMeadow('p3-bowl', 5, 5);
-            initP1Chart();
+            initCharts();
         };
     </script>
 </body>
