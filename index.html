@@ -141,7 +141,7 @@
             color: var(--text-muted);
         }
 
-        .control-group input, .control-group select {
+        .control-group input {
             width: 100%;
             padding: 10px;
             background: var(--bg-input);
@@ -177,7 +177,6 @@
             background: #2563eb;
         }
 
-        /* Meadow Visualization Container */
         .bowl-container {
             text-align: center;
             background: rgba(15, 23, 42, 0.6);
@@ -207,10 +206,6 @@
             font-size: 18px;
             display: inline-block;
             transition: transform 0.2s;
-        }
-
-        .flower:hover {
-            transform: scale(1.3);
         }
 
         .stats-row {
@@ -327,13 +322,13 @@
     <div class="container">
         <header>
             <h1>BIOL 1021 Lab 13: Wildflower Meadow Evolution Simulator</h1>
-            <p>Population Genetics Contextualized: Red ($R$) & White ($r$) Flower Alleles</p>
+            <p>Population Genetics Contextualized: Red (R) & White (r) Flower Alleles</p>
         </header>
 
         <div class="procedure-tabs">
-            <button class="tab-btn active" onclick="switchTab('proc1')">Procedure 1: Baseline Population (HWE)</button>
-            <button class="tab-btn" onclick="switchTab('proc2')">Procedure 2: Natural Selection (Herbivory on rr)</button>
-            <button class="tab-btn" onclick="switchTab('proc3')">Procedure 3: Isolated Patch (Genetic Drift)</button>
+            <button class="tab-btn active" onclick="switchTab('proc1', event)">Procedure 1: Baseline (HWE)</button>
+            <button class="tab-btn" onclick="switchTab('proc2', event)">Procedure 2: Selection (rr)</button>
+            <button class="tab-btn" onclick="switchTab('proc3', event)">Procedure 3: Drift (N=5)</button>
         </div>
 
         <!-- PROCEDURE 1 -->
@@ -343,7 +338,7 @@
                 <div>
                     <div class="controls-box">
                         <div class="control-group">
-                            <label>Starting Red Alleles ($R$) / White Alleles ($r$)</label>
+                            <label>Starting Red Alleles (R) / White Alleles (r)</label>
                             <div style="display: flex; gap: 10px;">
                                 <input type="number" id="p1-red" value="50" min="1" max="99">
                                 <input type="number" id="p1-white" value="50" min="1" max="99">
@@ -360,8 +355,8 @@
                     <h3>Current Meadow Flower Pool</h3>
                     <div class="bowl" id="p1-bowl"></div>
                     <div class="stats-row">
-                        <div class="stat-badge">Red Alleles ($R$): <span id="p1-stat-r">50</span></div>
-                        <div class="stat-badge">White Alleles ($r$): <span id="p1-stat-w">50</span></div>
+                        <div class="stat-badge">Red Alleles (R): <span id="p1-stat-r">50</span></div>
+                        <div class="stat-badge">White Alleles (r): <span id="p1-stat-w">50</span></div>
                     </div>
                 </div>
             </div>
@@ -398,9 +393,9 @@
                             <th>Total Plants</th>
                             <th>Total Alleles</th>
                             <th>Total R Alleles</th>
-                            <th>Frequency of R ($p$)</th>
+                            <th>Frequency of R (p)</th>
                             <th>Total r Alleles</th>
-                            <th>Frequency of r ($q$)</th>
+                            <th>Frequency of r (q)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -416,12 +411,12 @@
 
         <!-- PROCEDURE 2 -->
         <div id="proc2" class="panel">
-            <h2 class="panel-title">Procedure 2: Natural Selection (Selection Against Lethal $rr$)</h2>
+            <h2 class="panel-title">Procedure 2: Natural Selection (Selection Against Lethal rr)</h2>
             <div class="sim-grid">
                 <div>
                     <div class="controls-box">
                         <div class="control-group">
-                            <label>Current Allele Pool ($R$ Red / $r$ White)</label>
+                            <label>Current Allele Pool (R Red / r White)</label>
                             <div style="display: flex; gap: 10px;">
                                 <input type="number" id="p2-red" value="50">
                                 <input type="number" id="p2-white" value="50">
@@ -438,8 +433,8 @@
                     <h3>Meadow Pool (Selection Pressure Active)</h3>
                     <div class="bowl" id="p2-bowl"></div>
                     <div class="stats-row">
-                        <div class="stat-badge">Red Alleles ($R$): <span id="p2-stat-r">50</span></div>
-                        <div class="stat-badge">White Alleles ($r$): <span id="p2-stat-w">50</span></div>
+                        <div class="stat-badge">Red Alleles (R): <span id="p2-stat-r">50</span></div>
+                        <div class="stat-badge">White Alleles (r): <span id="p2-stat-w">50</span></div>
                     </div>
                 </div>
             </div>
@@ -448,7 +443,7 @@
                 <h3 style="color: var(--primary); margin-bottom: 15px; font-size: 1.1rem;">📝 Procedure 2 Concept Check</h3>
                 
                 <div class="quiz-question">
-                    <p>1. When the homozygous recessive genotype ($rr$) is lethal, what happens to the frequency of the favored allele ($R$) over time?</p>
+                    <p>1. When the homozygous recessive genotype (rr) is lethal, what happens to the frequency of the favored allele (R) over time?</p>
                     <div class="quiz-options">
                         <button class="quiz-option" onclick="checkAnswer(this, true, 'Correct! Selection against the recessive lethal genotype causes the dominant/favored allele R to increase over time.')">A) It increases over time</button>
                         <button class="quiz-option" onclick="checkAnswer(this, false, 'Incorrect. The favored allele is being selected for, so its frequency goes up.')">B) It decreases to zero immediately</button>
@@ -476,9 +471,9 @@
                             <th>Total Plants</th>
                             <th>Surviving Alleles</th>
                             <th>Total R Alleles</th>
-                            <th>Frequency of R ($p$)</th>
+                            <th>Frequency of R (p)</th>
                             <th>Total r Alleles</th>
-                            <th>Frequency of r ($q$)</th>
+                            <th>Frequency of r (q)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -494,7 +489,7 @@
 
         <!-- PROCEDURE 3 -->
         <div id="proc3" class="panel">
-            <h2 class="panel-title">Procedure 3: Isolated Patch (Genetic Drift, $N=5$ Plants)</h2>
+            <h2 class="panel-title">Procedure 3: Isolated Patch (Genetic Drift, N=5 Plants)</h2>
             <div class="sim-grid">
                 <div>
                     <div class="controls-box">
@@ -509,11 +504,11 @@
                     </div>
                 </div>
                 <div class="bowl-container">
-                    <h3>Micro-Patch ($N=5$)</h3>
+                    <h3>Micro-Patch (N=5)</h3>
                     <div class="bowl" id="p3-bowl" style="height: 110px;"></div>
                     <div class="stats-row">
-                        <div class="stat-badge">Red ($R$): <span id="p3-stat-r">5</span></div>
-                        <div class="stat-badge">White ($r$): <span id="p3-stat-w">5</span></div>
+                        <div class="stat-badge">Red (R): <span id="p3-stat-r">5</span></div>
+                        <div class="stat-badge">White (r): <span id="p3-stat-w">5</span></div>
                     </div>
                 </div>
             </div>
@@ -522,7 +517,7 @@
                 <h3 style="color: var(--primary); margin-bottom: 15px; font-size: 1.1rem;">📝 Procedure 3 Concept Check</h3>
                 
                 <div class="quiz-question">
-                    <p>1. Why do small populations ($N=5$) experience much wilder swings in allele frequency than large populations ($N=50$)?</p>
+                    <p>1. Why do small populations (N=5) experience much wilder swings in allele frequency than large populations (N=50)?</p>
                     <div class="quiz-options">
                         <button class="quiz-option" onclick="checkAnswer(this, false, 'Incorrect. Mutations are not the primary driver of rapid generation-to-generation drift swings here.')">A) High mutation rates</button>
                         <button class="quiz-option" onclick="checkAnswer(this, true, 'Correct! Small sample sizes amplify sampling error, meaning random chance events heavily skew allele frequencies.')">B) Greater susceptibility to sampling error (genetic drift)</button>
@@ -550,9 +545,9 @@
                             <th>Total Plants</th>
                             <th>Total Alleles</th>
                             <th>Total R Alleles</th>
-                            <th>Frequency of R ($p$)</th>
+                            <th>Frequency of R (p)</th>
                             <th>Total r Alleles</th>
-                            <th>Frequency of r ($q$)</th>
+                            <th>Frequency of r (q)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -568,11 +563,13 @@
     </div>
 
     <script>
-        function switchTab(tabId) {
+        function switchTab(tabId, event) {
             document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
-            event.target.classList.add('active');
+            if(event && event.target) {
+                event.target.classList.add('active');
+            }
         }
 
         function checkAnswer(button, isCorrect, explanation) {
